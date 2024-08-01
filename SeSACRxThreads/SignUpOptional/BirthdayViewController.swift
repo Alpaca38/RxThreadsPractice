@@ -7,6 +7,8 @@
  
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class BirthdayViewController: UIViewController {
     
@@ -66,18 +68,21 @@ class BirthdayViewController: UIViewController {
   
     let nextButton = PointButton(title: "가입하기")
     
+    let year = PublishRelay<Int>()
+    let month = PublishRelay<Int>()
+    let day = PublishRelay<Int>()
+    
+    let info = BehaviorRelay(value: "만 17세 이상만 가입 가능합니다.")
+    
+    private let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = Color.white
         
         configureLayout()
-        
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
-    }
-    
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(SearchViewController(), animated: true)
+        bind()
     }
 
     
@@ -113,4 +118,67 @@ class BirthdayViewController: UIViewController {
         }
     }
 
-}
+    func bind() {
+        disposeBag.insert {
+            nextButton.rx.tap
+                .bind(with: self) { owner, _ in
+                    owner.showAlert(title: "완료", message: nil, buttonTitle: "OK") {
+                        owner.navigationController?.pushViewController(SearchViewController(), animated: true)
+                    }
+                }
+            
+            info
+                .bind(to: infoLabel.rx.text)
+            
+            year
+                .map { "\($0)년" }
+                .bind(to: yearLabel.rx.text)
+            
+            month
+                .map { "\($0)월" }
+                .bind(to: monthLabel.rx.text)
+            
+            day
+                .map { "\($0)일" }
+                .bind(to: dayLabel.rx.text)
+            
+            birthDayPicker.rx.date
+                .bind(with: self) { owner, date in
+                    let component = Calendar.current.dateComponents([.year, .month, .day], from: date)
+                    
+                    owner.year.accept(component.year!)
+                    owner.month.accept(component.month!)
+                    owner.day.accept(component.day!)
+                }
+            
+            let validation = birthDayPicker.rx.date
+                .map {
+                    let component = Calendar.current.dateComponents([.year], from: $0, to: Date())
+                    return component.year! >= 17
+                }
+            
+            validation
+                .bind(to: nextButton.rx.isEnabled)
+            
+            validation
+                .bind(with: self) { owner, value in
+                    let infoColor = value ? UIColor.blue : UIColor.red
+                    owner.infoLabel.textColor = infoColor
+                    
+                    let buttonBackgroundColor = value ? UIColor.blue : UIColor.lightGray
+                    owner.nextButton.backgroundColor = buttonBackgroundColor
+                    
+                    value ? owner.info.accept("가입 가능한 나이입니다.") : owner.info.accept("만 17세 이상만 가입 가능합니다.")
+                }
+            
+        }
+    }
+    
+    func showAlert(title: String, message: String?, buttonTitle: String, buttonStyle: UIAlertAction.Style = .default, preferredStyle: UIAlertController.Style = .alert, completion: @escaping() -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
+        let button = UIAlertAction(title: buttonTitle, style: buttonStyle) { _ in
+            completion()
+        }
+        alert.addAction(button)
+        present(alert, animated: true)
+    }}
