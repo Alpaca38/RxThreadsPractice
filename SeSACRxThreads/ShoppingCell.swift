@@ -54,6 +54,8 @@ final class ShoppingCell: UITableViewCell {
 
 private extension ShoppingCell {
     func configureView() {
+        selectionStyle = .none
+        
         contentView.addSubview(customView)
         customView.addSubview(checkButton)
         customView.addSubview(contentLabel)

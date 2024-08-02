@@ -18,6 +18,20 @@ final class ShoppingListViewController: UIViewController {
         return view
     }()
     
+    private let addTextField = {
+        let view = UITextField()
+        view.placeholder = "무엇을 구매하실 건가요?"
+        return view
+    }()
+    
+    private let addButton = {
+        var config = UIButton.Configuration.gray()
+        config.title = "추가"
+        config.baseForegroundColor = .black
+        let view = UIButton(configuration: config)
+        return view
+    }()
+    
     private let tableView = {
         let view = UITableView()
         view.register(ShoppingCell.self, forCellReuseIdentifier: ShoppingCell.identifier)
@@ -45,11 +59,23 @@ private extension ShoppingListViewController {
         navigationItem.title = "쇼핑"
         
         view.addSubview(customView)
+        customView.addSubview(addTextField)
+        customView.addSubview(addButton)
         view.addSubview(tableView)
         
         customView.snp.makeConstraints {
             $0.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(80)
+        }
+        
+        addTextField.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(20)
+            $0.centerY.equalToSuperview()
+        }
+        
+        addButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-20)
+            $0.centerY.equalToSuperview()
         }
         
         tableView.snp.makeConstraints {
@@ -64,6 +90,15 @@ private extension ShoppingListViewController {
             list
                 .bind(to: tableView.rx.items(cellIdentifier: ShoppingCell.identifier, cellType: ShoppingCell.self)) { (row, element, cell) in
                     cell.configure(data: element)
+                }
+            
+            addButton.rx.tap
+                .withLatestFrom(addTextField.rx.text.orEmpty)
+                .bind(with: self) { owner, value in
+                    let content = value.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !content.isEmpty else { return }
+                    owner.data.insert(Shopping(check: false, label: content, bookmark: false), at: 0)
+                    owner.list.accept(owner.data)
                 }
         }
         
