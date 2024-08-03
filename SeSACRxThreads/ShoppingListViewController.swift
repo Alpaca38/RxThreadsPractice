@@ -90,6 +90,20 @@ private extension ShoppingListViewController {
             list
                 .bind(to: tableView.rx.items(cellIdentifier: ShoppingCell.identifier, cellType: ShoppingCell.self)) { (row, element, cell) in
                     cell.configure(data: element)
+                    
+                    cell.checkButton.rx.tap
+                        .bind(with: self) { owner, _ in
+                            owner.data[row].check.toggle()
+                            owner.list.accept(owner.data)
+                        }
+                        .disposed(by: cell.disposeBag)
+                    
+                    cell.favoriteButton.rx.tap
+                        .bind(with: self) { owner, _ in
+                            owner.data[row].bookmark.toggle()
+                            owner.list.accept(owner.data)
+                        }
+                        .disposed(by: cell.disposeBag)
                 }
             
             addButton.rx.tap

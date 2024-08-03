@@ -19,9 +19,9 @@ final class ShoppingCell: UITableViewCell {
         view.backgroundColor = .lightGray.withAlphaComponent(0.12)
         return view
     }()
-    private let checkButton = UIButton()
+    let checkButton = UIButton()
     private let contentLabel = UILabel()
-    private let favoriteButton = UIButton()
+    let favoriteButton = UIButton()
     
     var disposeBag = DisposeBag()
     
