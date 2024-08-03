@@ -11,6 +11,8 @@ import RxCocoa
 import SnapKit
 
 final class ShoppingListViewController: UIViewController {
+    private let searchBar = UISearchBar()
+    
     private let customView = {
         let view = UIView()
         view.backgroundColor = .lightGray.withAlphaComponent(0.12)
@@ -49,6 +51,7 @@ final class ShoppingListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        setSearchBar()
         bind()
     }
 }
@@ -56,8 +59,6 @@ final class ShoppingListViewController: UIViewController {
 private extension ShoppingListViewController {
     func configureView() {
         view.backgroundColor = .white
-        navigationItem.title = "쇼핑"
-        
         view.addSubview(customView)
         customView.addSubview(addTextField)
         customView.addSubview(addButton)
@@ -82,7 +83,11 @@ private extension ShoppingListViewController {
             $0.top.equalTo(customView.snp.bottom)
             $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-        
+    }
+    
+    func setSearchBar() {
+        view.addSubview(searchBar)
+        navigationItem.titleView = searchBar
     }
     
     func bind() {
@@ -131,6 +136,14 @@ private extension ShoppingListViewController {
                 .bind(with: self) { owner, indexPath in
                     owner.data.remove(at: indexPath.row)
                     owner.list.accept(owner.data)
+                }
+            
+            searchBar.rx.text.orEmpty
+                .debounce(.seconds(1), scheduler: MainScheduler.instance)
+                .distinctUntilChanged()
+                .bind(with: self) { owner, value in
+                    let result = value.isEmpty ? owner.data : owner.data.filter({ $0.label.contains(value) })
+                    owner.list.accept(result)
                 }
         }
     }
