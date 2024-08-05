@@ -123,8 +123,10 @@ private extension ShoppingListViewController {
             
             Observable.zip(tableView.rx.itemSelected, tableView.rx.modelSelected(Shopping.self))
                 .bind(with: self) { owner, value in
-                    let vc = DetailViewController(shoppingItem: value.1)
-                    vc.itemChanged
+                    let viewModel = DetailViewModel(shoppingItem: value.1)
+                    let vc = DetailViewController(viewModel: viewModel)
+                    
+                    vc.viewModel.itemChanged
                         .bind { updatedItem in
                             output.data[value.0.row] = updatedItem
                             output.list.accept(output.data)

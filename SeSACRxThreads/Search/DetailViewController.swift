@@ -15,11 +15,10 @@ final class DetailViewController: UIViewController {
     private let saveButton = PointButton(title: "저장")
     private let disposeBag = DisposeBag()
     
-    private var shoppingItem: Shopping
-    let itemChanged = PublishRelay<Shopping>()
+    let viewModel: DetailViewModel
     
-    init(shoppingItem: Shopping) {
-        self.shoppingItem = shoppingItem
+    init(viewModel: DetailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -52,28 +51,33 @@ private extension DetailViewController {
             $0.height.equalTo(50)
         }
         
-        detailTextField.text = shoppingItem.content
+        detailTextField.text = viewModel.shoppingItem.content
         detailTextField.borderStyle = .roundedRect
     }
     
     func bind() {
         disposeBag.insert {
-            saveButton.rx.tap
-                .withLatestFrom(detailTextField.rx.text.orEmpty)
+            let input = DetailViewModel.Input(
+                saveTap: saveButton.rx.tap,
+                detailText: detailTextField.rx.text
+            )
+            
+            let output = viewModel.transform(input: input)
+            
+            output.saveTap
+                .withLatestFrom(input.detailText.orEmpty)
                 .bind(with: self) { owner, value in
-                    owner.shoppingItem.content = value
-                    owner.itemChanged.accept(owner.shoppingItem)
+                    owner.viewModel.shoppingItem.content = value
+                    owner.viewModel.itemChanged.accept(owner.viewModel.shoppingItem)
+                    
                     owner.navigationController?.popViewController(animated: true)
                 }
             
-            let validation = detailTextField.rx.text.orEmpty
-                .map { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            output.validation
+                .drive(saveButton.rx.isEnabled)
             
-            validation
-                .bind(to: saveButton.rx.isEnabled)
-            
-            validation
-                .bind(with: self) { owner, value in
+            output.validation
+                .drive(with: self) { owner, value in
                     let color = value ? UIColor.blue : UIColor.lightGray
                     owner.saveButton.backgroundColor = color
                 }
