@@ -36,6 +36,7 @@
 		D16D8CED2C5D189600AF7677 /* ShoppingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8CEC2C5D189600AF7677 /* ShoppingCell.swift */; };
 		D16D8D002C608EBE00AF7677 /* PasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8CFF2C608EBE00AF7677 /* PasswordViewModel.swift */; };
 		D16D8D022C60917600AF7677 /* BirthdayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */; };
+		D16D8D042C60AE1A00AF7677 /* ShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D032C60AE1A00AF7677 /* ShoppingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		D16D8CEC2C5D189600AF7677 /* ShoppingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCell.swift; sourceTree = "<group>"; };
 		D16D8CFF2C608EBE00AF7677 /* PasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewModel.swift; sourceTree = "<group>"; };
 		D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayViewModel.swift; sourceTree = "<group>"; };
+		D16D8D032C60AE1A00AF7677 /* ShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +154,7 @@
 				041280312AEF9BAC00972552 /* Info.plist */,
 				041280772AF1D14000972552 /* Resource.swift */,
 				D16D8CE82C5D168000AF7677 /* ShoppingListViewController.swift */,
+				D16D8D032C60AE1A00AF7677 /* ShoppingViewModel.swift */,
 				D16D8CEC2C5D189600AF7677 /* ShoppingCell.swift */,
 				D16D8CEA2C5D16FE00AF7677 /* Shopping.swift */,
 			);
@@ -371,6 +374,7 @@
 				0412806C2AEFABFE00972552 /* PasswordViewController.swift in Sources */,
 				041280562AEFA04800972552 /* SignInViewController.swift in Sources */,
 				041280282AEF9BAB00972552 /* ViewController.swift in Sources */,
+				D16D8D042C60AE1A00AF7677 /* ShoppingViewModel.swift in Sources */,
 				041280632AEFA0CE00972552 /* PointButton.swift in Sources */,
 				D16D8D002C608EBE00AF7677 /* PasswordViewModel.swift in Sources */,
 				D16D8CED2C5D189600AF7677 /* ShoppingCell.swift in Sources */,

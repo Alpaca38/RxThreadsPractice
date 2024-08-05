@@ -40,12 +40,7 @@ final class ShoppingListViewController: UIViewController {
         return view
     }()
     
-    private var data = [Shopping(check: true, label: "그립톡 구매하기", bookmark: true),
-                        Shopping(check: false, label: "사이다 구매", bookmark: false),
-                        Shopping(check: false, label: "아이패드 케이스 최저가 알아보기", bookmark: true),
-                        Shopping(check: false, label: "양말", bookmark: true)]
-    
-    private lazy var list = BehaviorRelay(value: data)
+    private let viewModel = ShoppingViewModel()
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -91,33 +86,39 @@ private extension ShoppingListViewController {
     }
     
     func bind() {
+        let input = ShoppingViewModel.Input(
+            addTap: addButton.rx.tap,
+            addText: addTextField.rx.text)
+        
+        var output = viewModel.transform(input: input)
+        
         disposeBag.insert {
-            list
+            output.list
                 .bind(to: tableView.rx.items(cellIdentifier: ShoppingCell.identifier, cellType: ShoppingCell.self)) { (row, element, cell) in
                     cell.configure(data: element)
                     
                     cell.checkButton.rx.tap
                         .bind(with: self) { owner, _ in
-                            owner.data[row].check.toggle()
-                            owner.list.accept(owner.data)
+                            output.data[row].check.toggle()
+                            output.list.accept(output.data)
                         }
                         .disposed(by: cell.disposeBag)
                     
                     cell.favoriteButton.rx.tap
                         .bind(with: self) { owner, _ in
-                            owner.data[row].bookmark.toggle()
-                            owner.list.accept(owner.data)
+                            output.data[row].bookmark.toggle()
+                            output.list.accept(output.data)
                         }
                         .disposed(by: cell.disposeBag)
                 }
             
-            addButton.rx.tap
+            output.addTap
                 .withLatestFrom(addTextField.rx.text.orEmpty)
                 .bind(with: self) { owner, value in
                     let content = value.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !content.isEmpty else { return }
-                    owner.data.insert(Shopping(check: false, label: content, bookmark: false), at: 0)
-                    owner.list.accept(owner.data)
+                    output.data.insert(Shopping(check: false, content: content, bookmark: false), at: 0)
+                    output.list.accept(output.data)
                 }
             
             Observable.zip(tableView.rx.itemSelected, tableView.rx.modelSelected(Shopping.self))
@@ -125,8 +126,8 @@ private extension ShoppingListViewController {
                     let vc = DetailViewController(shoppingItem: value.1)
                     vc.itemChanged
                         .bind { updatedItem in
-                            owner.data[value.0.row] = updatedItem
-                            owner.list.accept(owner.data)
+                            output.data[value.0.row] = updatedItem
+                            output.list.accept(output.data)
                         }
                         .disposed(by: owner.disposeBag)
                     owner.navigationController?.pushViewController(vc, animated: true)
@@ -134,16 +135,16 @@ private extension ShoppingListViewController {
             
             tableView.rx.itemDeleted
                 .bind(with: self) { owner, indexPath in
-                    owner.data.remove(at: indexPath.row)
-                    owner.list.accept(owner.data)
+                    output.data.remove(at: indexPath.row)
+                    output.list.accept(output.data)
                 }
             
             searchBar.rx.text.orEmpty
                 .debounce(.seconds(1), scheduler: MainScheduler.instance)
                 .distinctUntilChanged()
                 .bind(with: self) { owner, value in
-                    let result = value.isEmpty ? owner.data : owner.data.filter({ $0.label.contains(value) })
-                    owner.list.accept(result)
+                    let result = value.isEmpty ? output.data : output.data.filter({ $0.content.range(of: value, options: .caseInsensitive) != nil  })
+                    output.list.accept(result)
                 }
         }
     }

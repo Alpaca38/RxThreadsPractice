@@ -20,13 +20,10 @@ final class BirthdayViewModel {
             .map { let component = Calendar.current.dateComponents([.year], from: $0, to: Date())
                 return component.year! >= 17 }
             .asDriver(onErrorJustReturn: false)
-//            .share()
-//            .share(replay: 1)
         
         input.birthDay
             .bind(onNext: { date in
                 let component = Calendar.current.dateComponents([.year, .month, .day], from: date)
-                
                 year.accept(component.year!)
                 month.accept(component.month!)
                 day.accept(component.day!)

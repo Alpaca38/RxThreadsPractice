@@ -52,7 +52,7 @@ private extension DetailViewController {
             $0.height.equalTo(50)
         }
         
-        detailTextField.text = shoppingItem.label
+        detailTextField.text = shoppingItem.content
         detailTextField.borderStyle = .roundedRect
     }
     
@@ -61,7 +61,7 @@ private extension DetailViewController {
             saveButton.rx.tap
                 .withLatestFrom(detailTextField.rx.text.orEmpty)
                 .bind(with: self) { owner, value in
-                    owner.shoppingItem.label = value
+                    owner.shoppingItem.content = value
                     owner.itemChanged.accept(owner.shoppingItem)
                     owner.navigationController?.popViewController(animated: true)
                 }

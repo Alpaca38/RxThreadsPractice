@@ -40,7 +40,7 @@ final class ShoppingCell: UITableViewCell {
     }
     
     func configure(data: Shopping) {
-        contentLabel.text = data.label
+        contentLabel.text = data.content
         
         let checkImage = data.check ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
         checkButton.setImage(checkImage, for: .normal)

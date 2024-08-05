@@ -9,6 +9,6 @@ import Foundation
 
 struct Shopping {
     var check: Bool
-    var label: String
+    var content: String
     var bookmark: Bool
 }
