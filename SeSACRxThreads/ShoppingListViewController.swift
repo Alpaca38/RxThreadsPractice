@@ -113,7 +113,7 @@ private extension ShoppingListViewController {
                 }
             
             output.addTap
-                .withLatestFrom(addTextField.rx.text.orEmpty)
+                .withLatestFrom(input.addText.orEmpty)
                 .bind(with: self) { owner, value in
                     let content = value.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !content.isEmpty else { return }
