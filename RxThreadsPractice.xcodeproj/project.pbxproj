@@ -35,6 +35,7 @@
 		D16D8CEB2C5D16FE00AF7677 /* Shopping.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8CEA2C5D16FE00AF7677 /* Shopping.swift */; };
 		D16D8CED2C5D189600AF7677 /* ShoppingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8CEC2C5D189600AF7677 /* ShoppingCell.swift */; };
 		D16D8D002C608EBE00AF7677 /* PasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8CFF2C608EBE00AF7677 /* PasswordViewModel.swift */; };
+		D16D8D022C60917600AF7677 /* BirthdayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		D16D8CEA2C5D16FE00AF7677 /* Shopping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shopping.swift; sourceTree = "<group>"; };
 		D16D8CEC2C5D189600AF7677 /* ShoppingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCell.swift; sourceTree = "<group>"; };
 		D16D8CFF2C608EBE00AF7677 /* PasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewModel.swift; sourceTree = "<group>"; };
+		D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				0412806E2AEFAD2D00972552 /* BirthdayViewController.swift */,
+				D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */,
 				041280702AEFAD3D00972552 /* PhoneViewController.swift */,
 				041280722AEFAD4B00972552 /* NicknameViewController.swift */,
 			);
@@ -372,6 +375,7 @@
 				D16D8D002C608EBE00AF7677 /* PasswordViewModel.swift in Sources */,
 				D16D8CED2C5D189600AF7677 /* ShoppingCell.swift in Sources */,
 				04F6DC022C5B0D8200667F4D /* DetailViewController.swift in Sources */,
+				D16D8D022C60917600AF7677 /* BirthdayViewModel.swift in Sources */,
 				041280242AEF9BAB00972552 /* AppDelegate.swift in Sources */,
 				04F6DBFE2C5B0C0300667F4D /* SearchViewController.swift in Sources */,
 				04F6DC002C5B0C2200667F4D /* SearchTableViewCell.swift in Sources */,
