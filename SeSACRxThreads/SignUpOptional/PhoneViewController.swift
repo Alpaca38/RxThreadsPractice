@@ -16,7 +16,7 @@ class PhoneViewController: UIViewController {
     let nextButton = PointButton(title: "다음")
     
     private let descriptionLabel = UILabel()
-//    private let validText = Observable.just("10자 이상 입력해주세요.")
+    
     private let validText = BehaviorRelay(value: "10자 이상 입력해주세요")
     private let phoneText = Observable.just("010")
     private let disposeBag = DisposeBag()
