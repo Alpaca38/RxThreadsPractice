@@ -38,6 +38,7 @@
 		D16D8D022C60917600AF7677 /* BirthdayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */; };
 		D16D8D042C60AE1A00AF7677 /* ShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D032C60AE1A00AF7677 /* ShoppingViewModel.swift */; };
 		D16D8D0D2C60BF8000AF7677 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D0C2C60BF8000AF7677 /* DetailViewModel.swift */; };
+		D16D8D3A2C63337200AF7677 /* ShoppingHeaderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16D8D392C63337200AF7677 /* ShoppingHeaderCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		D16D8D012C60917600AF7677 /* BirthdayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayViewModel.swift; sourceTree = "<group>"; };
 		D16D8D032C60AE1A00AF7677 /* ShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewModel.swift; sourceTree = "<group>"; };
 		D16D8D0C2C60BF8000AF7677 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
+		D16D8D392C63337200AF7677 /* ShoppingHeaderCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingHeaderCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 				D16D8CE82C5D168000AF7677 /* ShoppingListViewController.swift */,
 				D16D8D032C60AE1A00AF7677 /* ShoppingViewModel.swift */,
 				D16D8CEC2C5D189600AF7677 /* ShoppingCell.swift */,
+				D16D8D392C63337200AF7677 /* ShoppingHeaderCollectionViewCell.swift */,
 				D16D8CEA2C5D16FE00AF7677 /* Shopping.swift */,
 			);
 			path = SeSACRxThreads;
@@ -370,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				041280782AF1D14000972552 /* Resource.swift in Sources */,
+				D16D8D3A2C63337200AF7677 /* ShoppingHeaderCollectionViewCell.swift in Sources */,
 				D16D8CEB2C5D16FE00AF7677 /* Shopping.swift in Sources */,
 				D16D8CE92C5D168000AF7677 /* ShoppingListViewController.swift in Sources */,
 				0412806F2AEFAD2D00972552 /* BirthdayViewController.swift in Sources */,

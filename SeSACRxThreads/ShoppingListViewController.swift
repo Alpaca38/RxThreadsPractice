@@ -40,6 +40,14 @@ final class ShoppingListViewController: UIViewController {
         return view
     }()
     
+    private lazy var collectionView = {
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout())
+        view.showsHorizontalScrollIndicator = false
+        view.register(ShoppingHeaderCollectionViewCell.self, forCellWithReuseIdentifier: ShoppingHeaderCollectionViewCell.identifier)
+        return view
+    }()
+    
+    
     private let viewModel = ShoppingViewModel()
     private let disposeBag = DisposeBag()
     
@@ -74,6 +82,13 @@ private extension ShoppingListViewController {
             $0.centerY.equalToSuperview()
         }
         
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 40))
+        headerView.addSubview(collectionView)
+        collectionView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        tableView.tableHeaderView = headerView
+        
         tableView.snp.makeConstraints {
             $0.top.equalTo(customView.snp.bottom)
             $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -85,10 +100,32 @@ private extension ShoppingListViewController {
         navigationItem.titleView = searchBar
     }
     
+    func layout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        return layout
+    }
+    
     func bind() {
+        let suggestedData = PublishRelay<String>()
+        let checkButtonTap = PublishRelay<Int>()
+        let favoriteButtonTap = PublishRelay<Int>()
+        let addText = PublishRelay<String>()
+        let itemChanged = PublishRelay<(Int, Shopping)>()
+        let itemDeleted = PublishRelay<Int>()
+        let searchText = PublishRelay<String>()
+        
         let input = ShoppingViewModel.Input(
             addTap: addButton.rx.tap,
-            addText: addTextField.rx.text)
+            addText: addText,
+            suggestedData: suggestedData,
+            checkButtonTap: checkButtonTap,
+            favoriteButtonTap: favoriteButtonTap,
+            itemChanged: itemChanged,
+            itemDeleted: itemDeleted,
+            searchText: searchText
+        )
         
         var output = viewModel.transform(input: input)
         
@@ -98,27 +135,34 @@ private extension ShoppingListViewController {
                     cell.configure(data: element)
                     
                     cell.checkButton.rx.tap
-                        .bind(with: self) { owner, _ in
-                            output.data[row].check.toggle()
-                            output.list.accept(output.data)
+                        .bind { _ in
+                            checkButtonTap.accept(row)
                         }
                         .disposed(by: cell.disposeBag)
                     
                     cell.favoriteButton.rx.tap
-                        .bind(with: self) { owner, _ in
-                            output.data[row].bookmark.toggle()
-                            output.list.accept(output.data)
+                        .bind { _ in
+                            favoriteButtonTap.accept(row)
                         }
                         .disposed(by: cell.disposeBag)
                 }
             
+            output.suggestedList
+                .bind(to: collectionView.rx.items(cellIdentifier: ShoppingHeaderCollectionViewCell.identifier, cellType: ShoppingHeaderCollectionViewCell.self)) { row, element, cell in
+                    cell.configure(data: element)
+                }
+            
+            collectionView.rx.modelSelected(String.self)
+                .bind { value in
+                    suggestedData.accept(value)
+                }
+            
             output.addTap
-                .withLatestFrom(input.addText.orEmpty)
+            .withLatestFrom(addTextField.rx.text.orEmpty)
                 .bind(with: self) { owner, value in
                     let content = value.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !content.isEmpty else { return }
-                    output.data.insert(Shopping(check: false, content: content, bookmark: false), at: 0)
-                    output.list.accept(output.data)
+                    addText.accept(value)
                 }
             
             Observable.zip(tableView.rx.itemSelected, tableView.rx.modelSelected(Shopping.self))
@@ -127,9 +171,9 @@ private extension ShoppingListViewController {
                     let vc = DetailViewController(viewModel: viewModel)
                     
                     vc.viewModel.itemChanged
-                        .bind { updatedItem in
-                            output.data[value.0.row] = updatedItem
-                            output.list.accept(output.data)
+                        .map({ (value.0.row, $0) })
+                        .bind {
+                            itemChanged.accept(($0.0, $0.1))
                         }
                         .disposed(by: owner.disposeBag)
                     owner.navigationController?.pushViewController(vc, animated: true)
@@ -137,16 +181,14 @@ private extension ShoppingListViewController {
             
             tableView.rx.itemDeleted
                 .bind(with: self) { owner, indexPath in
-                    output.data.remove(at: indexPath.row)
-                    output.list.accept(output.data)
+                    itemDeleted.accept(indexPath.row)
                 }
             
             searchBar.rx.text.orEmpty
                 .debounce(.seconds(1), scheduler: MainScheduler.instance)
                 .distinctUntilChanged()
                 .bind(with: self) { owner, value in
-                    let result = value.isEmpty ? output.data : output.data.filter({ $0.content.range(of: value, options: .caseInsensitive) != nil  })
-                    output.list.accept(result)
+                    searchText.accept(value)
                 }
         }
     }
